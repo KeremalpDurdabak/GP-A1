@@ -1,45 +1,61 @@
-from modules.variation.genetic_operators import crossover, mutate
-from modules.selection.fitness_function import evaluate_fitness
-from modules.selection.selection import breeder_selection
-from modules.utils.utils import load_data, preprocess_data
-from modules.population.population import initialize_population
+from modules.OperatorSet import OperatorSet
+from modules.Population import Population
+from modules.Individual import Individual
+from modules.ProblemDefinition import ProblemDefinition
+from modules.RegisterList import RegisterList
 
-def main(dataset_path):
-    # Load and preprocess dataset
-    data = load_data(dataset_path)
-    data = preprocess_data(data)
-    
+def main(problem):
+
     # Initialize population with 'programs'
-    population = initialize_population(data)
+    population = Population(problem)
+
+
+    for _ in 100:
+
+        fitness = compute_fitness(population)
+
+        if fitness >= 100:
+            break
+
+        parents = select_parents(fitness,population)
+        child = apply_breeding(parents)
+        child = apply_mutation(child)
+        population = replace_population(child, population)
+
+    print(population)
+
     
-    # Number of generations
-    num_generations = 100
-    
-    for generation in range(num_generations):
-        # Evaluate fitness of each individual in the population
-        fitness_values = evaluate_fitness(population, data)
-        
-        # Breeder model for selection
-        selected_individuals = breeder_selection(population, fitness_values)
-        
-        # Crossover and Mutation
-        offspring = crossover(selected_individuals)
-        offspring = mutate(offspring)
-        
-        # Update population for the next generation
-        population = update_population(selected_individuals, offspring)
-        
-        # (Optional) Log or print current best individual and its fitness
-        
-    # Final reporting
-    best_individual = find_best_individual(population)
-    print(f"The best individual after {num_generations} generations is {best_individual}")
 
 if __name__ == "__main__":
 
-    # Adjust variables here
-    iris_dataset = "datasets/iris/iris.data"
-    tictactoe_dataset = "datasets/tic+tac+toe+endgame/tic-tac-toe.data"
+    # Declare Problem Parameters
+    ############################
+
+    # Dataset Path
+    iris_dataset_path = "datasets/iris/iris.data"
+    tictactoe_dataset_path = "datasets/tic+tac+toe+endgame/tic-tac-toe.data"
+
+    # Number of Individuals in the Population
+    population_count = 100
+
+    # Max Instruction (Row) per each Individual
+    max_instruction = 63
+
+    # Operators that will be used
+    operators = OperatorSet(['+','-','*2','/2'])
+
+    # Max number per each decode instruction (Source Select, Target Index, Source Index)
+    # (Max number for the 'operator_select' is dynamically assumed by the OperatorSet class)
+    max_decode_instructions = [2, 4, 4]
+
+    # Number of Registers to use
+    registerList = RegisterList(4)
+
+    ############################
+
+    # Initialize Problem Class with the Problem Parameters
+    iris_problem = ProblemDefinition(iris_dataset_path, population_count, registerList, max_instruction, operators, max_decode_instructions)
+    tictactoe_problem = ProblemDefinition(tictactoe_dataset_path, population_count, registerList, max_instruction, operators, max_decode_instructions)
 
     # Do GP!
-    main(iris_dataset)
+    main(iris_problem)
