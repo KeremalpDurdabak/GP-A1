@@ -6,23 +6,29 @@ from modules.RegisterList import RegisterList
 
 def main(problem):
 
-    # Initialize population with 'programs'
+    # Initialize population with 'program' individuals
     population = Population(problem)
-
-
-    for _ in 100:
-
-        fitness = compute_fitness(population)
-
-        if fitness >= 100:
-            break
-
-        parents = select_parents(fitness,population)
-        child = apply_breeding(parents)
-        child = apply_mutation(child)
-        population = replace_population(child, population)
-
     print(population)
+
+    # ParentSelector class for FitnessEvaluation and ParentSelection
+    # VariationOperator for Crossover and Mutation
+    # or... just Parent class where you just initialize it
+    # parents = Parent(population)
+    # parentPool = ParentSelector(population) 
+
+    # for _ in 100:
+
+    #     fitness = compute_fitness(population)
+
+    #     if fitness >= 100:
+    #         break
+
+    #     parents = select_parents(fitness,population)
+    #     child = apply_breeding(parents)
+    #     child = apply_mutation(child)
+    #     population = replace_population(child, population)
+
+    # print(population)
 
     
 
@@ -49,13 +55,15 @@ if __name__ == "__main__":
     max_decode_instructions = [2, 4, 4]
 
     # Number of Registers to use
-    registerList = RegisterList(4)
+    registerCount = 4
+
+    # Number of Categorical Labels to predict
+    labelCount = 3
 
     ############################
 
     # Initialize Problem Class with the Problem Parameters
-    iris_problem = ProblemDefinition(iris_dataset_path, population_count, registerList, max_instruction, operators, max_decode_instructions)
-    tictactoe_problem = ProblemDefinition(tictactoe_dataset_path, population_count, registerList, max_instruction, operators, max_decode_instructions)
-
+    problem = ProblemDefinition(iris_dataset_path, population_count, registerCount, labelCount, max_instruction, operators, max_decode_instructions)
+    
     # Do GP!
-    main(iris_problem)
+    main(problem)

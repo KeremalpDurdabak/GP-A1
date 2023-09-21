@@ -2,9 +2,10 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
 class ProblemDefinition:
-    def __init__(self, dataset_path, population_count, registerList, max_instruction, operators, max_decode_instructions):
+    def __init__(self, dataset_path, population_count, registerCount, labelCount, max_instruction, operators, max_decode_instructions):
         self.population_count = population_count
-        self.registerList = registerList
+        self.registerCount = registerCount
+        self.labelCount = labelCount
         self.dataset_path = dataset_path
         self.max_instruction = max_instruction
         self.operators = operators
@@ -15,7 +16,7 @@ class ProblemDefinition:
     def load_data(self):
         data = pd.read_csv(self.dataset_path, header=None)  # Assuming the dataset doesn't have a header
         return data
-
+    
     def one_hot_encode_target(self):
         if self.df is None:
             print("Data not loaded. Please load the data first.")

@@ -10,5 +10,15 @@ class RegisterList:
             new_register = 0
             self.registers.append(new_register)
 
+    def argmax(self):
+        max_reg = max(self.registers)
+        argmax_reg = self.registers.index(max_reg)
+        return argmax_reg
+
     def count(self):
         return len(self.registers)
+
+    def reset_registers(self):
+        # Reset all register values to 0
+        for i in range(len(self.registers)):
+            self.registers[i] = 0

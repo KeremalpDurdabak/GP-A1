@@ -1,17 +1,19 @@
-import random
-from modules.Instruction import Instruction
+from modules.InstructionList import InstructionList  # Import the new class
 
 class Individual:
     def __init__(self, problemDefinition):
         self.problemDefinition = problemDefinition
-        self.instructions = []  # List to store instances of the Instruction class
-        self.initialize_instructions()
+        self.instructionList = InstructionList(self.problemDefinition)  # Use the new class
+        self.argmaxList = []
+        self.compute_instructions_through_dataset()
+        print(self.argmaxList)
 
-    def initialize_instructions(self):
-        # Determine the random number of instructions for this individual
-        num_instructions = random.randint(1, self.problemDefinition.max_instruction)
-        
-        # Initialize the instructions
-        for PC in range(num_instructions):
-            new_instruction = Instruction(self.problemDefinition, PC)
-            self.instructions.append(new_instruction)
+    def compute_instructions_through_dataset(self):
+        for PC in range(self.problemDefinition.df.shape[0]):
+            self.instructionList.compute_instructions_per_instance(PC)
+            max_index = self.instructionList.get_argmax(self.problemDefinition.labelCount)
+            self.argmaxList.append(max_index)
+            self.instructionList.registerList.reset_registers()  # Reset registers here
+
+    # def compute_fitness(self):
+

@@ -14,3 +14,6 @@ class Population:
 
     def count(self):
         return len(self.individuals)
+
+    def computeFitness(self):
+        pass
