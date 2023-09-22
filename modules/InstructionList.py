@@ -1,6 +1,7 @@
 import random
 from modules.Instruction import Instruction
 from modules.RegisterList import RegisterList
+import numpy as np
 
 class InstructionList:
     def __init__(self, problemDefinition):
@@ -20,7 +21,6 @@ class InstructionList:
             self.instructions[i].compute_instruction(PC, self.registerList)
 
     def get_argmax(self, labelCount):
-        sliced_registerList = self.registerList.registers[:labelCount]
-        max_val = max(sliced_registerList)
-        max_index = sliced_registerList.index(max_val)
+        sliced_registerList = np.array(self.registerList.registers[:labelCount])
+        max_index = np.argmax(sliced_registerList)
         return max_index

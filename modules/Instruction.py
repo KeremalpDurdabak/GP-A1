@@ -26,6 +26,5 @@ class Instruction:
             source_value
         )
 
-
     def __repr__(self):
         return f"Instruction(source_select={self.source_select}, target_index={self.target_index}, operator_select={self.operator_select}, source_index={self.source_index})"

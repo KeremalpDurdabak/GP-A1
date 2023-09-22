@@ -2,16 +2,20 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
 class ProblemDefinition:
-    def __init__(self, dataset_path, population_count, registerCount, labelCount, max_instruction, operators, max_decode_instructions):
+    def __init__(self, dataset_path, gen_count, gap_percentage, population_count, registerCount, labelCount, max_instruction, operators, max_decode_instructions, mutation_prob):
         self.population_count = population_count
+        self.gen_count = gen_count
+        self.gap_num = int(self.population_count * gap_percentage)
         self.registerCount = registerCount
         self.labelCount = labelCount
         self.dataset_path = dataset_path
         self.max_instruction = max_instruction
         self.operators = operators
         self.max_decode_instructions = max_decode_instructions
+        self.mutation_prob = mutation_prob
         self.df = self.load_data()
         self.df = self.one_hot_encode_target()
+        self.df = self.df.sample(frac=1).reset_index(drop=True)
 
     def load_data(self):
         data = pd.read_csv(self.dataset_path, header=None)  # Assuming the dataset doesn't have a header

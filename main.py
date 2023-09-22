@@ -1,3 +1,4 @@
+from modules.BreedOperator import BreedOperator
 from modules.OperatorSet import OperatorSet
 from modules.Population import Population
 from modules.Individual import Individual
@@ -5,32 +6,26 @@ from modules.ProblemDefinition import ProblemDefinition
 from modules.RegisterList import RegisterList
 
 def main(problem):
-
-    # Initialize population with 'program' individuals
     population = Population(problem)
-    print(population)
 
-    # ParentSelector class for FitnessEvaluation and ParentSelection
-    # VariationOperator for Crossover and Mutation
-    # or... just Parent class where you just initialize it
-    # parents = Parent(population)
-    # parentPool = ParentSelector(population) 
+    for gen in range(1, problem.gen_count):
+        population.computeFitness()
+        breeder = BreedOperator(population)
 
-    # for _ in 100:
+        # Calculate and print the sum of fitness scores for the current generation
+        total_fitness = sum(individual.fitnessScore for individual in population.individuals)
+        print(f"Generation {gen}: Total Fitness = {total_fitness}")
 
-    #     fitness = compute_fitness(population)
+        parents = breeder.generateParentPool()
+        children = breeder.generateChildPool()
 
-    #     if fitness >= 100:
-    #         break
+        # Combine parents and children to form the next generation
+        next_gen = parents + children  # Simply concatenate the lists
 
-    #     parents = select_parents(fitness,population)
-    #     child = apply_breeding(parents)
-    #     child = apply_mutation(child)
-    #     population = replace_population(child, population)
+        # Initialize a new population with individuals from the previous generation
+        population = Population(problem, next_generation=next_gen)
+        population.set_new_individuals(children)  # Set new individuals for the next generation
 
-    # print(population)
-
-    
 
 if __name__ == "__main__":
 
@@ -60,10 +55,30 @@ if __name__ == "__main__":
     # Number of Categorical Labels to predict
     labelCount = 3
 
+    # Percentage of worst fit Individuals to replace
+    gap_percentage = 0.2
+
+    # Generation Count
+    gen_count = 1000
+
+    # Probability of a Mutation
+    mutation_prob = 0.2
+
+
     ############################
 
     # Initialize Problem Class with the Problem Parameters
-    problem = ProblemDefinition(iris_dataset_path, population_count, registerCount, labelCount, max_instruction, operators, max_decode_instructions)
+    problem = ProblemDefinition(iris_dataset_path, 
+                                gen_count, 
+                                gap_percentage, 
+                                population_count, 
+                                registerCount, 
+                                labelCount, 
+                                max_instruction, 
+                                operators, 
+                                max_decode_instructions,
+                                mutation_prob
+                                )
     
     # Do GP!
     main(problem)
