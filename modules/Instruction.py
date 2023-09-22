@@ -20,9 +20,10 @@ class Instruction:
             source_value = registerList.registers[self.source_index % registerList.count()]
 
         # Compute the instruction
-        registerList.registers[self.target_index % registerList.count()] = self.problemDefinition.operators.compute(
+        target_idx_mod = self.target_index % registerList.count()
+        registerList.registers[target_idx_mod] = self.problemDefinition.operators.compute(
             self.operator_select,
-            registerList.registers[self.target_index % registerList.count()],
+            registerList.registers[target_idx_mod],
             source_value
         )
 

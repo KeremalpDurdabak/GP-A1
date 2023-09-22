@@ -40,7 +40,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 63
+    max_instruction = 20
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     gen_count = 1000
 
     # Probability of a Mutation
-    mutation_prob = 0.2
+    mutation_prob = 0.1
 
 
     ############################
