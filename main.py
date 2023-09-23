@@ -59,7 +59,7 @@ if __name__ == "__main__":
     gen_count = 1000
 
     # Probability of a Mutation
-    mutation_prob = 0.1
+    mutation_prob = 0.2
 
 
     ############################

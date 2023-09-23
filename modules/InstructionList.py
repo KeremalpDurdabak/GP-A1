@@ -20,6 +20,7 @@ class InstructionList:
         for i in range(self.num_instructions):
             self.instructions[i].execute_instruction(PC, registerList)
 
+
     def toString(self):
         instruction_string_list = []
         for i in range(self.num_instructions):

@@ -9,8 +9,9 @@ class Individual:
         self.fitnessScore = 0
         self.registerList = RegisterList()
 
-    def create_individual(self):
-        self.instructionList.generate_instruction_list()
+    def create_individual(self, isChild = False):
+        if not isChild:
+            self.instructionList.generate_instruction_list() 
         self.registerList.generate_register_list(self.problemDefinition.registerCount)
 
     def compute_individual_dataset_fitness_score(self):
@@ -18,6 +19,7 @@ class Individual:
         for PC in range(df_row_count):
             self.instructionList.execute_instance(PC, self.registerList)
             self.compute_individual_instance_fitness_score(PC)
+            self.registerList.reset_registers()
         return self.fitnessScore
 
     def compute_individual_instance_fitness_score(self, PC):

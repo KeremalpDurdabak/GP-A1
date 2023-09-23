@@ -2,6 +2,7 @@ import random
 
 from modules.Individual import Individual
 from modules.Instruction import Instruction
+import numpy as np
 
 
 class BreedOperator:
@@ -15,7 +16,11 @@ class BreedOperator:
         return individuals_fitness
 
     def select_parents(self, population):
-        return random.sample(population.individuals, 2)
+        weights = [individual.fitnessScore for individual in population.individuals]
+        selected_indices = np.random.choice(len(population.individuals), 2, replace=False, p=np.array(weights)/sum(weights))
+        selected_parents = [population.individuals[i] for i in selected_indices]
+        return selected_parents
+    
 
     def crossover(self, parent1, parent2):
         crossover_point = random.randint(0, min(len(parent1.instructionList.instructions), len(parent2.instructionList.instructions)) - 1)
@@ -24,12 +29,16 @@ class BreedOperator:
         child2_instructions = parent2.instructionList.instructions[:crossover_point] + parent1.instructionList.instructions[crossover_point:]
         
         child1 = Individual(self.problemDefinition)
-        child1.create_individual()
+        child1.create_individual(isChild=True)
         child2 = Individual(self.problemDefinition)
-        child2.create_individual()
+        child2.create_individual(isChild=True)
         
         child1.instructionList.instructions = child1_instructions
         child2.instructionList.instructions = child2_instructions
+
+        child1.instructionList.num_instructions = len(child1_instructions)
+        child2.instructionList.num_instructions = len(child2_instructions)
+
         
         return child1, child2
 
