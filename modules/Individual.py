@@ -1,34 +1,32 @@
-from modules.InstructionList import InstructionList  # Import the new class
+import numpy as np
+from modules.InstructionList import InstructionList
+from modules.RegisterList import RegisterList  # Import the new class
 
 class Individual:
-    def __init__(self, problemDefinition, instructionList=None):
+    def __init__(self, problemDefinition):
         self.problemDefinition = problemDefinition
-        if instructionList:
-            self.instructionList = instructionList
-        else:
-            self.instructionList = InstructionList(self.problemDefinition)
-        self.argmaxList = []
+        self.instructionList = InstructionList(problemDefinition)
         self.fitnessScore = 0
-        self.compute_instructions_through_dataset()
+        self.registerList = RegisterList()
 
+    def create_individual(self):
+        self.instructionList.generate_instruction_list()
+        self.registerList.generate_register_list(self.problemDefinition.registerCount)
 
-    def compute_instructions_through_dataset(self):
-        for PC in range(self.problemDefinition.df.shape[0]):
-            self.instructionList.compute_instructions_per_instance(PC)
-            max_index = self.instructionList.get_argmax(self.problemDefinition.labelCount)
-            self.argmaxList.append(max_index)
-            self.instructionList.registerList.reset_registers()  # Reset registers here
+    def compute_individual_dataset_fitness_score(self):
+        df_row_count = len(self.problemDefinition.dataset.get_df().index)
+        for PC in range(df_row_count):
+            self.instructionList.execute_instance(PC, self.registerList)
+            self.compute_individual_instance_fitness_score(PC)
+        return self.fitnessScore
 
-    def compute_fitness(self):
-        label_columns = self.problemDefinition.df.columns[-self.problemDefinition.labelCount:]  # Get the last 'labelCount' columns
-        
-        for i in range(len(self.argmaxList)):
-            predicted_label = self.argmaxList[i]
-            actual_label_vector = self.problemDefinition.df.iloc[i][label_columns].tolist()
-            
-            # Find the index of the actual label (where the value is 1 in one-hot encoding)
-            actual_label = actual_label_vector.index(1)
-            
-            # Compare and update the fitness score
-            if predicted_label == actual_label:
-                self.fitnessScore += 1
+    def compute_individual_instance_fitness_score(self, PC):
+        instance_individual_label_verdict = self.registerList.argmax(self.problemDefinition.dataset.get_label_count())
+        instance_real_label_verdict = self.problemDefinition.dataset.get_y().iloc[PC].values
+
+        # Check if the individual's decision matches the real target label
+        if np.array_equal(instance_individual_label_verdict, instance_real_label_verdict):
+            self.fitnessScore += 1
+
+    def get_representation(self):
+        return self.instructionList.toString()

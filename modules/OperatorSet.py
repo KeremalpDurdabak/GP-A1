@@ -2,6 +2,20 @@ class OperatorSet:
     def __init__(self, operators):
         self.operators = operators
 
+    @staticmethod
+    def represent(self, opNumber):
+        if opNumber == 0:
+            return '+'
+        elif opNumber == 1:
+            return '-'
+        elif opNumber == 2:
+            return '* 2'
+        elif opNumber == 3:
+            return '/ 2'
+        else:
+            raise ValueError(f"Out of bounds opNumber: {opNumber}")
+
+
     def compute(self, operator_select, operand1, operand2):
         operator = self.operators[operator_select]
         
