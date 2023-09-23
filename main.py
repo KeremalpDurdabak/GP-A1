@@ -53,13 +53,13 @@ if __name__ == "__main__":
     registerCount = 4
 
     # Percentage of worst fit Individuals to replace
-    gap_percentage = 0.2
+    gap_percentage = 0.3
 
     # Generation Count
     gen_count = 1000
 
     # Probability of a Mutation
-    mutation_prob = 0.2
+    mutation_prob = 0.5
 
 
     ############################
