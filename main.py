@@ -17,7 +17,10 @@ def main(problem):
     # Initialize Representation class
     representation = Representation(population)
 
-    print(problem.dataset.get_df().index)
+    # Initialize lists to store fitness scores
+    best_scores = []
+    mean_scores = []
+    worst_scores = []
 
     for gen in range(1, problem.gen_count):
         print(f"Generation {gen}:")
@@ -28,10 +31,20 @@ def main(problem):
         representation.display_all_fitness()
         representation.display_highest_representation()
 
+        # Collect fitness scores
+        all_fitness = [individual.fitnessScore for individual in population.individuals]
+        best_scores.append(max(all_fitness))
+        mean_scores.append(sum(all_fitness) / len(all_fitness))
+        worst_scores.append(min(all_fitness))
+
+        # Train Generation
         population.removePopulationGap()
         children = breeder.breed(population)
         breeder.compute_individuals_fitness(children)
         population.replacePopulationGap(children)
+    
+    # Plot the fitness scores
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
 
 
 if __name__ == "__main__":
@@ -41,7 +54,7 @@ if __name__ == "__main__":
 
     # Dataset Path
     iris_dataset = Dataset("datasets/iris/iris.data")
-    tictactoe_dataset_path = Dataset("datasets/tic+tac+toe+endgame/tic-tac-toe.data")
+    #tictactoe_dataset_path = Dataset("datasets/tic+tac+toe+endgame/tic-tac-toe.data")
 
     # Number of Individuals in the Population
     population_count = 100
@@ -60,13 +73,17 @@ if __name__ == "__main__":
     registerCount = 4
 
     # Percentage of worst fit Individuals to replace
-    gap_percentage = 0.3
+    gap_percentage = 0.2
 
     # Generation Count
     gen_count = 1000
 
     # Probability of a Mutation
-    mutation_prob = 0.2
+    # 1. Probability of re-initializing an Instruction
+    # 2. Probability of re-initializing an Instruction Bit
+    # 3. Probability of randomly appending a new instruction to the child
+    # 4. Probability of randomly removing an instruction from the child
+    mutation_prob = [0.05, 0.3, 0.05, 0.05]  # List of 4 probabilities
 
 
     ############################

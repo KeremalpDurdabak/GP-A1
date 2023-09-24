@@ -1,5 +1,6 @@
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.calibration import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 class Dataset:
     def __init__(self, dataset_path):
@@ -10,8 +11,21 @@ class Dataset:
         self.preprocess_data()
 
     def preprocess_data(self):
-        self.df = self.one_hot_encode_target()
+        self.handle_string_features()
+        self.df, self.label_count = self.one_hot_encode_target()
+        self.df = self.normalize_data()
         self.df = self.df.sample(frac=1).reset_index(drop=True)
+
+    def handle_string_features(self):
+        label_encoders = {}  # To keep track of label encoders for each column (if needed later)
+        
+        for col in self.df.columns:
+            if self.df[col].dtype == 'object':  # Check if the column is of object type (usually for strings)
+                le = LabelEncoder()
+                self.df[col] = le.fit_transform(self.df[col])
+                label_encoders[col] = le  # Store the label encoder
+                
+        return label_encoders
 
     def get_df(self):
         return self.df
@@ -20,7 +34,7 @@ class Dataset:
         return self.label_count
 
     def load_data(self):
-        data = pd.read_csv(self.dataset_path, header=None)  # Assuming the dataset doesn't have a header
+        data = pd.read_csv(self.dataset_path, header=None)
         return data
     
     def get_X(self):
@@ -30,21 +44,27 @@ class Dataset:
         return self.df.iloc[:, -self.label_count:]
     
     def one_hot_encode_target(self):
-        if self.df is None:
-            print("Data not loaded. Please load the data first.")
-            return None
-
-        # One-hot encode the target variable
         encoder = OneHotEncoder(sparse=False)
         y_onehot = encoder.fit_transform(self.df.iloc[:, -1].values.reshape(-1, 1))
-
-        # Update the label_count
-        self.label_count = y_onehot.shape[1]
-
-        # Convert one-hot encoded array back to DataFrame for easier manipulation
+        label_count = y_onehot.shape[1]
         y_onehot_df = pd.DataFrame(y_onehot, columns=encoder.get_feature_names_out(input_features=['target']))
-
-        # Concatenate features and one-hot encoded target
-        preprocessed_data = pd.concat([self.get_X(), y_onehot_df], axis=1)
         
-        return preprocessed_data
+        # Concatenate the original features with the one-hot encoded target labels
+        preprocessed_data = pd.concat([self.df.iloc[:, :-1], y_onehot_df], axis=1)
+        
+        return preprocessed_data, label_count
+
+    def normalize_data(self):
+        # Separate the features and target labels
+        X = self.df.iloc[:, :-self.label_count]
+        y = self.df.iloc[:, -self.label_count:]
+
+        # Normalize the features
+        scaler = MinMaxScaler()
+        X_scaled = scaler.fit_transform(X)
+        X_scaled_df = pd.DataFrame(X_scaled, columns=X.columns)
+        
+        # Concatenate the normalized features with the target labels
+        normalized_data = pd.concat([X_scaled_df, y], axis=1)
+        
+        return normalized_data
