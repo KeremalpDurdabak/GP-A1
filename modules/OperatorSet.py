@@ -3,7 +3,7 @@ class OperatorSet:
         self.operators = operators
 
     @staticmethod
-    def represent(self, opNumber):
+    def represent(opNumber):
         if opNumber == 0:
             return '+'
         elif opNumber == 1:

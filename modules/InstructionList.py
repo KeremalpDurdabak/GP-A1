@@ -10,7 +10,7 @@ class InstructionList:
         self.num_instructions = 0
     
     def generate_instruction_list(self):
-        self.num_instructions = random.randint(2, self.problemDefinition.max_instruction)
+        self.num_instructions = random.randint(2, self.problemDefinition.max_instruction - 1)
         for _ in range(self.num_instructions):
             new_instruction = Instruction(self.problemDefinition)
             new_instruction.generate_instruction()
@@ -24,5 +24,5 @@ class InstructionList:
     def toString(self):
         instruction_string_list = []
         for i in range(self.num_instructions):
-            instruction_string_list.append(i.toString())
+            instruction_string_list.append(self.instructions[i].toString())
         return instruction_string_list

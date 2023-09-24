@@ -5,25 +5,32 @@ from modules.Population import Population
 from modules.Individual import Individual
 from modules.ProblemDefinition import ProblemDefinition
 from modules.RegisterList import RegisterList
+from modules.Representation import Representation  # Import the Representation class
 
 def main(problem):
-
     population = Population(problem)
     population.create_population()
 
     breeder = BreedOperator(problem)
     breeder.compute_individuals_fitness(population.individuals)
 
+    # Initialize Representation class
+    representation = Representation(population)
+
+    print(problem.dataset.get_df().index)
+
     for gen in range(1, problem.gen_count):
-        # Calculate and print the sum of fitness scores for the current generation
-        total_fitness = sum(individual.fitnessScore for individual in population.individuals)
-        print(f"Generation {gen}: Total Fitness = {total_fitness}")
+        print(f"Generation {gen}:")
+        
+        # Call Representation methods
+        representation.display_total_fitness()
+        representation.display_highest_fitness()
+        representation.display_all_fitness()
+        representation.display_highest_representation()
 
         population.removePopulationGap()
-
         children = breeder.breed(population)
         breeder.compute_individuals_fitness(children)
-
         population.replacePopulationGap(children)
 
 
@@ -40,7 +47,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 32
+    max_instruction = 24
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -59,7 +66,7 @@ if __name__ == "__main__":
     gen_count = 1000
 
     # Probability of a Mutation
-    mutation_prob = 0.5
+    mutation_prob = 0.2
 
 
     ############################

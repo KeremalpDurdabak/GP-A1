@@ -14,11 +14,14 @@ class BreedOperator:
             individuals_fitness += i.compute_individual_dataset_fitness_score()
         return individuals_fitness
 
+    # def select_parents(self, population):
+    #     weights = [individual.fitnessScore for individual in population.individuals]
+    #     selected_indices = np.random.choice(len(population.individuals), 2, replace=False, p=np.array(weights)/sum(weights))
+    #     selected_parents = [population.individuals[i] for i in selected_indices]
+    #     return selected_parents
+    
     def select_parents(self, population):
-        weights = [individual.fitnessScore for individual in population.individuals]
-        selected_indices = np.random.choice(len(population.individuals), 2, replace=False, p=np.array(weights)/sum(weights))
-        selected_parents = [population.individuals[i] for i in selected_indices]
-        return selected_parents
+        return random.sample(population.individuals, 2)
 
     def crossover(self, parent1, parent2):
         min_length = min(len(parent1.instructionList.instructions), len(parent2.instructionList.instructions))
@@ -53,7 +56,7 @@ class BreedOperator:
     def mutate(self, individual):
         if random.random() < self.problemDefinition.mutation_prob:
             # Randomly decide the number of mutations (up to 3)
-            num_mutations = random.randint(1, len(individual.instructionList.instructions))
+            num_mutations = random.randint(1, 4 - 1)
             
             # Mutate existing instructions
             for _ in range(num_mutations):
@@ -75,6 +78,15 @@ class BreedOperator:
                 del individual.instructionList.instructions[remove_point]
                 individual.instructionList.num_instructions -= 1
 
+            # 20% chance for bit-level mutation
+            if random.random() < 0.3:
+                mutation_point = random.randint(0, len(individual.instructionList.instructions) - 1)
+                individual.instructionList.instructions[mutation_point].mutate_instruction_bits()
+
+    # def mutate(self, individual):
+    #     if random.random() < self.problemDefinition.mutation_prob:
+    #         mutation_point = random.randint(0, len(individual.instructionList.instructions) - 1)
+    #         individual.instructionList.instructions[mutation_point].mutate_instruction_bits()
 
 
     def breed(self, population):
