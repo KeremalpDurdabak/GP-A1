@@ -32,8 +32,14 @@ class Population:
         # Sort the individuals by their fitnessScore in ascending order
         self.individuals.sort(key=lambda x: x.fitnessScore)
         
+        # Pick the stable worst individual
+        stable_worst_index = self.problemDefinition.population_count - self.problemDefinition.gap_num - 1
+        stable_worst_score = self.individuals[stable_worst_index].fitnessScore
+        
         # Remove the worst individuals based on gap_num
         del self.individuals[:self.problemDefinition.gap_num]
+        
+        return stable_worst_score  # Return the stable worst score for further use
 
     def replacePopulationGap(self, new_individuals):
         # Calculate the current gap size

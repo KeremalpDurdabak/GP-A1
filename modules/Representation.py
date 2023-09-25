@@ -1,3 +1,6 @@
+from matplotlib import pyplot as plt
+
+
 class Representation:
     def __init__(self, population):
         self.population = population
@@ -6,17 +9,17 @@ class Representation:
     def display_total_fitness(self):
         total_fitness = sum(individual.fitnessScore for individual in self.population.individuals)
         total_fitness_percentage = (total_fitness / self.max_possible_fitness) * 100
-        print(f"Total Fitness: {round(total_fitness_percentage):.0f}%")
+        print(f"Total Fitness: {total_fitness_percentage:.0f}%")
 
     def display_highest_fitness(self):
         highest_fitness = max(individual.fitnessScore for individual in self.population.individuals)
         highest_fitness_percentage = (highest_fitness / self.max_possible_fitness) * 100 * 100
-        print(f"Highest Fitness: {round(highest_fitness_percentage):.0f}%")
+        print(f"Highest Fitness: {highest_fitness_percentage:.0f}%")
 
     def display_all_fitness(self):
         all_fitness = [individual.fitnessScore for individual in self.population.individuals]
         sorted_fitness = sorted(all_fitness, reverse=True)
-        sorted_fitness_percentage = [f"{round((x / self.max_possible_fitness) * 100 * 100):.0f}%" for x in sorted_fitness]
+        sorted_fitness_percentage = [f"{(x / self.max_possible_fitness * 100 * 100):.0f}%" for x in sorted_fitness]
         print(f"All Fitness Scores (Sorted): {sorted_fitness_percentage}")
 
 
@@ -27,9 +30,9 @@ class Representation:
 
     def plot_fitness_scores(self, best_scores, mean_scores, worst_scores):
         plt.figure(figsize=(10, 6))
-        plt.plot(best_scores, label='Best Fitness')
-        plt.plot(mean_scores, label='Mean Fitness')
-        plt.plot(worst_scores, label='Worst Fitness')
+        plt.plot(best_scores, label='Best Fitness', color='#3498DB')  # Blueish
+        plt.plot(mean_scores, label='Mean Fitness', color='#F39C12')  # Yellow/Orange-ish
+        plt.plot(worst_scores, label='Worst Fitness', color='#E74C3C')  # Redish
         plt.xlabel('Generation')
         plt.ylabel('Fitness Score')
         plt.legend()

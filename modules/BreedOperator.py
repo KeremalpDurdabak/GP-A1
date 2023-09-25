@@ -117,7 +117,7 @@ class BreedOperator:
         for _ in range(self.problemDefinition.gap_num // 2):
             parent1, parent2 = self.select_parents(population, 'agnostic')
             
-            child1, child2 = self.crossover(parent1, parent2, 'double')
+            child1, child2 = self.crossover(parent1, parent2, 'single')
             
             self.mutate(child1)
             self.mutate(child2)

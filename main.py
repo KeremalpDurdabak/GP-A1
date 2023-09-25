@@ -17,6 +17,7 @@ def main(problem):
     # Initialize Representation class
     representation = Representation(population)
 
+
     # Initialize lists to store fitness scores
     best_scores = []
     mean_scores = []
@@ -33,18 +34,36 @@ def main(problem):
 
         # Collect fitness scores
         all_fitness = [individual.fitnessScore for individual in population.individuals]
-        best_scores.append(max(all_fitness))
-        mean_scores.append(sum(all_fitness) / len(all_fitness))
-        worst_scores.append(min(all_fitness))
+        max_fitness = max(all_fitness)
+        
+        max_fitness_percentage = (max_fitness / representation.max_possible_fitness) * 100 * 100  # Aligned with Representation class
+
+        print(max_fitness_percentage)
+        # Terminate if any individual's fitness exceeds 85%
+        if max_fitness_percentage >= 90:  # Adjusted to align with Representation class
+            print("Stopping criterion reached.")
+            break
 
         # Train Generation
         population.removePopulationGap()
+
+        # Calculate the worst and mean score among the remaining individuals
+        worst_among_remaining = min(individual.fitnessScore for individual in population.individuals)
+        mean_among_remaining = sum(individual.fitnessScore for individual in population.individuals) / len(population.individuals)
+
+        # Append to lists for plotting
+        best_scores.append(max_fitness)
+        mean_scores.append(mean_among_remaining)  # Use mean_among_remaining here
+        worst_scores.append(worst_among_remaining)  # Use worst_among_remaining here
+        
         children = breeder.breed(population)
         breeder.compute_individuals_fitness(children)
         population.replacePopulationGap(children)
-    
+
+
     # Plot the fitness scores
     representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
+
 
 
 if __name__ == "__main__":
@@ -76,14 +95,14 @@ if __name__ == "__main__":
     gap_percentage = 0.2
 
     # Generation Count
-    gen_count = 1000
+    gen_count = 100
 
     # Probability of a Mutation
     # 1. Probability of re-initializing an Instruction
     # 2. Probability of re-initializing an Instruction Bit
     # 3. Probability of randomly appending a new instruction to the child
     # 4. Probability of randomly removing an instruction from the child
-    mutation_prob = [0.05, 0.3, 0.05, 0.05]  # List of 4 probabilities
+    mutation_prob = [0.05, 0.2, 0.05, 0.05]  # List of 4 probabilities
 
 
     ############################
