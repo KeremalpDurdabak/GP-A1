@@ -40,9 +40,9 @@ def main(problem):
 
         print(max_fitness_percentage)
         # Terminate if any individual's fitness exceeds 85%
-        if max_fitness_percentage >= 90:  # Adjusted to align with Representation class
-            print("Stopping criterion reached.")
-            break
+        # if max_fitness_percentage >= 90:  # Adjusted to align with Representation class
+        #     print("Stopping criterion reached.")
+        #     break
 
         # Train Generation
         population.removePopulationGap()
@@ -73,13 +73,13 @@ if __name__ == "__main__":
 
     # Dataset Path
     iris_dataset = Dataset("datasets/iris/iris.data")
-    #tictactoe_dataset_path = Dataset("datasets/tic+tac+toe+endgame/tic-tac-toe.data")
+    tictactoe_dataset = Dataset("datasets/tic+tac+toe+endgame/tic-tac-toe.data")
 
     # Number of Individuals in the Population
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 24
+    max_instruction = 16
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -95,14 +95,14 @@ if __name__ == "__main__":
     gap_percentage = 0.2
 
     # Generation Count
-    gen_count = 100
+    gen_count = 1000
 
     # Probability of a Mutation
     # 1. Probability of re-initializing an Instruction
     # 2. Probability of re-initializing an Instruction Bit
     # 3. Probability of randomly appending a new instruction to the child
     # 4. Probability of randomly removing an instruction from the child
-    mutation_prob = [0.05, 0.2, 0.05, 0.05]  # List of 4 probabilities
+    mutation_prob = [0.1, 0.3, 0.05, 0.05]  # List of 4 probabilities
 
 
     ############################

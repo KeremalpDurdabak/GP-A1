@@ -34,7 +34,7 @@ class Instruction:
             # Pull the value from the dataset's feature dataframe
             # Use modulus to wrap the index
             # % self.problemDefinition.dataset.get_X().shape[1]
-            source_value = self.problemDefinition.dataset.get_X().iloc[PC, self.source_index]
+            source_value = self.problemDefinition.dataset.get_X().iloc[PC, self.source_index % self.problemDefinition.dataset.get_X().shape[1]]#!
         else:
             # Use the register
             source_value = registerList.registers[self.source_index % registerList.count()]

@@ -8,12 +8,14 @@ class Dataset:
         self.df = self.load_data()
         self.label_count = 1  # Initialize with 1 assuming only one target column before encoding
 
+        #print(self.df.head())
         self.preprocess_data()
+        #print(self.df.head())
 
     def preprocess_data(self):
         self.handle_string_features()
         self.df, self.label_count = self.one_hot_encode_target()
-        self.df = self.normalize_data()
+        #self.df = self.normalize_data()
         self.df = self.df.sample(frac=1).reset_index(drop=True)
 
     def handle_string_features(self):

@@ -23,7 +23,8 @@ class Individual:
         return self.fitnessScore
 
     def compute_individual_instance_fitness_score(self, PC):
-        instance_individual_label_verdict = self.registerList.argmax(self.problemDefinition.dataset.get_label_count())
+        instance_individual_label_verdict = self.registerList.argmax(self.problemDefinition.dataset.get_label_count())#!
+        #calculate which classes gets classified first
         instance_real_label_verdict = self.problemDefinition.dataset.get_y().iloc[PC].values
 
         # Check if the individual's decision matches the real target label
