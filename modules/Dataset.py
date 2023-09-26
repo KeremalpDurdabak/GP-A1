@@ -1,12 +1,17 @@
 import pandas as pd
 from sklearn.calibration import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
+import numpy as np
 
 class Dataset:
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
         self.df = self.load_data()
         self.label_count = 1  # Initialize with 1 assuming only one target column before encoding
+        self.feature_count = self.df.shape[1]
+
+        self._X_numpy = self.df.iloc[:, :-self.label_count].to_numpy()
+        self._y_numpy = self.df.iloc[:, -self.label_count:].to_numpy()
 
         #print(self.df.head())
         self.preprocess_data()
@@ -40,10 +45,10 @@ class Dataset:
         return data
     
     def get_X(self):
-        return self.df.iloc[:, :-self.label_count]
+        return self._X_numpy
     
     def get_y(self):
-        return self.df.iloc[:, -self.label_count:]
+        return self._y_numpy
     
     def one_hot_encode_target(self):
         encoder = OneHotEncoder(sparse=False)

@@ -4,7 +4,8 @@ from matplotlib import pyplot as plt
 class Representation:
     def __init__(self, population):
         self.population = population
-        self.max_possible_fitness = len(self.population.problemDefinition.dataset.get_df().index) * len(self.population.individuals)
+        self.max_possible_fitness = self.population.problemDefinition.dataset.get_X().shape[0] * len(self.population.individuals)
+
 
     def display_total_fitness(self):
         total_fitness = sum(individual.fitnessScore for individual in self.population.individuals)

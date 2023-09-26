@@ -29,14 +29,10 @@ class Instruction:
         if 'source_index' in bits_to_mutate:
             self.source_index = random.randint(0, self.problemDefinition.max_decode_instructions[2] - 1)
 
-    def execute_instruction(self, PC, registerList):
+    def execute_instruction(self, current_row, registerList):
         if self.source_select == 0:
-            # Pull the value from the dataset's feature dataframe
-            # Use modulus to wrap the index
-            # % self.problemDefinition.dataset.get_X().shape[1]
-            source_value = self.problemDefinition.dataset.get_X().iloc[PC, self.source_index % self.problemDefinition.dataset.get_X().shape[1]]#!
+            source_value = current_row[self.source_index % self.problemDefinition.dataset.get_X().shape[1]]
         else:
-            # Use the register
             source_value = registerList.registers[self.source_index % registerList.count()]
 
         # Compute the instruction

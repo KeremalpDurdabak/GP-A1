@@ -16,9 +16,9 @@ class InstructionList:
             new_instruction.generate_instruction()
             self.instructions.append(new_instruction)
 
-    def execute_instance(self, PC, registerList):
+    def execute_instance(self, current_row, registerList):
         for i in range(self.num_instructions):
-            self.instructions[i].execute_instruction(PC, registerList)
+            self.instructions[i].execute_instruction(current_row, registerList)
 
 
     def toString(self):

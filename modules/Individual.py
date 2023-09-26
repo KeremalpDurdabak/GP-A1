@@ -15,17 +15,17 @@ class Individual:
         self.registerList.generate_register_list(self.problemDefinition.registerCount)
 
     def compute_individual_dataset_fitness_score(self):
-        df_row_count = len(self.problemDefinition.dataset.get_df().index)
+        df_row_count = self.problemDefinition.dataset.get_X().shape[0]  # Use shape[0] to get the number of rows
         for PC in range(df_row_count):
-            self.instructionList.execute_instance(PC, self.registerList)
+            current_row = self.problemDefinition.dataset.get_X()[PC, :]  # Use NumPy slicing
+            self.instructionList.execute_instance(current_row, self.registerList)
             self.compute_individual_instance_fitness_score(PC)
             self.registerList.reset_registers()
         return self.fitnessScore
 
     def compute_individual_instance_fitness_score(self, PC):
-        instance_individual_label_verdict = self.registerList.argmax(self.problemDefinition.dataset.get_label_count())#!
-        #calculate which classes gets classified first
-        instance_real_label_verdict = self.problemDefinition.dataset.get_y().iloc[PC].values
+        instance_individual_label_verdict = self.registerList.argmax(self.problemDefinition.dataset.get_label_count())
+        instance_real_label_verdict = self.problemDefinition.dataset.get_y()[PC, :]  # Use NumPy slicing
 
         # Check if the individual's decision matches the real target label
         if np.array_equal(instance_individual_label_verdict, instance_real_label_verdict):

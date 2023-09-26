@@ -62,7 +62,7 @@ def main(problem):
 
 
     # Plot the fitness scores
-    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
+    #representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
 
 
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 16
+    max_instruction = 32
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     gap_percentage = 0.2
 
     # Generation Count
-    gen_count = 1000
+    gen_count = 100
 
     # Probability of a Mutation
     # 1. Probability of re-initializing an Instruction
