@@ -20,8 +20,14 @@ class Dataset:
     def preprocess_data(self):
         self.handle_string_features()
         self.df, self.label_count = self.one_hot_encode_target()
-        #self.df = self.normalize_data()
-        self.df = self.df.sample(frac=1).reset_index(drop=True)
+        
+        # Shuffle the dataset using NumPy
+        np.random.shuffle(self.df)
+        
+        # Update the instance variables
+        self._X_numpy = self.df[:, :-self.label_count]
+        self._y_numpy = self.df[:, -self.label_count:]
+
 
     def handle_string_features(self):
         label_encoders = {}  # To keep track of label encoders for each column (if needed later)
@@ -54,24 +60,29 @@ class Dataset:
         encoder = OneHotEncoder(sparse=False)
         y_onehot = encoder.fit_transform(self.df.iloc[:, -1].values.reshape(-1, 1))
         label_count = y_onehot.shape[1]
-        y_onehot_df = pd.DataFrame(y_onehot, columns=encoder.get_feature_names_out(input_features=['target']))
+        
+        # Convert the original DataFrame to NumPy array and remove the last column (target)
+        data_numpy = self.df.iloc[:, :-1].to_numpy()
         
         # Concatenate the original features with the one-hot encoded target labels
-        preprocessed_data = pd.concat([self.df.iloc[:, :-1], y_onehot_df], axis=1)
+        preprocessed_data = np.hstack([data_numpy, y_onehot])
+        
+        # Update the instance variables
+        self._X_numpy = preprocessed_data[:, :-label_count]
+        self._y_numpy = preprocessed_data[:, -label_count:]
         
         return preprocessed_data, label_count
 
     def normalize_data(self):
-        # Separate the features and target labels
-        X = self.df.iloc[:, :-self.label_count]
-        y = self.df.iloc[:, -self.label_count:]
-
-        # Normalize the features
+        # Normalize the features using MinMaxScaler
         scaler = MinMaxScaler()
-        X_scaled = scaler.fit_transform(X)
-        X_scaled_df = pd.DataFrame(X_scaled, columns=X.columns)
-        
+        X_scaled = scaler.fit_transform(self._X_numpy)
+
         # Concatenate the normalized features with the target labels
-        normalized_data = pd.concat([X_scaled_df, y], axis=1)
-        
+        normalized_data = np.hstack([X_scaled, self._y_numpy])
+
+        # Update the instance variables
+        self._X_numpy = normalized_data[:, :-self.label_count]
+        self._y_numpy = normalized_data[:, -self.label_count:]
+
         return normalized_data

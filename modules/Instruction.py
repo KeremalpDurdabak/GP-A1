@@ -33,12 +33,12 @@ class Instruction:
         if self.source_select == 0:
             source_value = current_row[self.source_index % self.problemDefinition.dataset.get_X().shape[1]]
         else:
-            source_value = registerList.registers[self.source_index % registerList.count()]
+            source_value = registerList.registers[self.source_index % self.problemDefinition.registerCount]
 
         # Compute the instruction
-        registerList.registers[self.target_index % registerList.count()] = self.problemDefinition.operators.compute(
+        registerList.registers[self.target_index % self.problemDefinition.registerCount] = self.problemDefinition.operators.compute(
             self.operator_select,
-            registerList.registers[self.target_index % registerList.count()],
+            registerList.registers[self.target_index % self.problemDefinition.registerCount],
             source_value
         )
 

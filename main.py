@@ -36,7 +36,7 @@ def main(problem):
         all_fitness = [individual.fitnessScore for individual in population.individuals]
         max_fitness = max(all_fitness)
         
-        max_fitness_percentage = (max_fitness / representation.max_possible_fitness) * 100 * 100  # Aligned with Representation class
+        max_fitness_percentage = (max_fitness / representation.max_possible_fitness) * 100  # Aligned with Representation class
 
         print(max_fitness_percentage)
         # Terminate if any individual's fitness exceeds 85%
@@ -62,7 +62,7 @@ def main(problem):
 
 
     # Plot the fitness scores
-    #representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
 
 
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 32
+    max_instruction = 24
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     registerCount = 4
 
     # Percentage of worst fit Individuals to replace
-    gap_percentage = 0.2
+    gap_percentage = 0.3
 
     # Generation Count
     gen_count = 100

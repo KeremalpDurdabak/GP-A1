@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 class Representation:
     def __init__(self, population):
         self.population = population
-        self.max_possible_fitness = self.population.problemDefinition.dataset.get_X().shape[0] * len(self.population.individuals)
+        self.max_possible_fitness = self.population.problemDefinition.dataset.get_X().shape[0]
 
 
     def display_total_fitness(self):
@@ -14,13 +14,13 @@ class Representation:
 
     def display_highest_fitness(self):
         highest_fitness = max(individual.fitnessScore for individual in self.population.individuals)
-        highest_fitness_percentage = (highest_fitness / self.max_possible_fitness) * 100 * 100
+        highest_fitness_percentage = (highest_fitness / self.max_possible_fitness) * 100
         print(f"Highest Fitness: {highest_fitness_percentage:.0f}%")
 
     def display_all_fitness(self):
         all_fitness = [individual.fitnessScore for individual in self.population.individuals]
         sorted_fitness = sorted(all_fitness, reverse=True)
-        sorted_fitness_percentage = [f"{(x / self.max_possible_fitness * 100 * 100):.0f}%" for x in sorted_fitness]
+        sorted_fitness_percentage = [f"{(x / self.max_possible_fitness * 100 ):.0f}%" for x in sorted_fitness]
         print(f"All Fitness Scores (Sorted): {sorted_fitness_percentage}")
 
 
