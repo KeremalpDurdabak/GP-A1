@@ -23,16 +23,17 @@ def main(problem):
     mean_scores = []
     worst_scores = []
 
+    # Initialize list to store class prediction percentages of best-fit individuals
+    best_class_predictions = []
+
+
     for gen in range(1, problem.gen_count):
         print(f"Generation {gen}:")
         
         # Train Generation
         population.removePopulationGap()
-        
         children = breeder.breed(population)
         breeder.compute_individuals_fitness(children)
-
-        # Update the population with children
         population.replacePopulationGap(children)
 
         # Call Representation methods here
@@ -41,6 +42,11 @@ def main(problem):
         representation.display_all_fitness()
         representation.display_highest_representation()
 
+        # Collect class predictions for the best individual in this generation
+        class_predictions = representation.display_highest_fitness_class_prediction()
+        best_class_predictions.append(class_predictions)
+
+
         # Collect fitness scores for plotting
         all_fitness = [individual.fitnessScore for individual in population.individuals]
         best_scores.append(max(all_fitness))
@@ -48,7 +54,7 @@ def main(problem):
         worst_scores.append(min(all_fitness))
 
     # Plot the fitness scores
-    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, best_class_predictions)
 
 
 
@@ -62,10 +68,10 @@ if __name__ == "__main__":
     tictactoe_dataset = Dataset("datasets/tic+tac+toe+endgame/tic-tac-toe.data")
 
     # Number of Individuals in the Population
-    population_count = 24
+    population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 64
+    max_instruction = 24
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -88,7 +94,7 @@ if __name__ == "__main__":
     # 2. Probability of re-initializing an Instruction Bit
     # 3. Probability of randomly appending a new instruction to the child
     # 4. Probability of randomly removing an instruction from the child
-    mutation_prob = [0.2, 0.3, 0.1, 0.05]  # List of 4 probabilities
+    mutation_prob = [0.1, 0.3, 0.1, 0.05]  # List of 4 probabilities
 
 
     ############################

@@ -33,3 +33,32 @@ class Individual:
 
     def get_representation(self):
         return self.instructionList.toString()
+    
+    def get_predicted_classes(self):
+        # Initialize an array to store the sum of correctly predicted classes
+        predicted_classes_sum = np.zeros(self.problemDefinition.dataset.get_label_count())
+
+        # Count the number of instances for each category in the y dataframe
+        y_data = self.problemDefinition.dataset.get_y()
+        total_instances_per_category = np.sum(y_data, axis=0)
+
+        df_row_count = self.problemDefinition.dataset.get_X().shape[0]
+        for PC in range(df_row_count):
+            current_row = self.problemDefinition.dataset.get_X()[PC, :]
+            self.instructionList.execute_instance(current_row, self.registerList)
+
+            instance_individual_label_verdict = self.registerList.argmax(self.problemDefinition.dataset.get_label_count())
+            instance_real_label_verdict = y_data[PC, :]
+
+            # Check if the individual's decision matches the real target label
+            if np.array_equal(instance_individual_label_verdict, instance_real_label_verdict):
+                predicted_classes_sum += instance_real_label_verdict
+
+            self.registerList.reset_registers()
+
+        # Calculate the percentages
+        predicted_classes_percentage = (predicted_classes_sum / total_instances_per_category) * 100
+
+        return list(predicted_classes_percentage)
+
+
