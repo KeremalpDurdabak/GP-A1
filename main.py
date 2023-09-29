@@ -17,15 +17,10 @@ def main(problem):
     # Initialize Representation class
     representation = Representation(population)
 
-
     # Initialize lists to store fitness scores
     best_scores = []
     mean_scores = []
     worst_scores = []
-
-    # Initialize list to store class prediction percentages of best-fit individuals
-    best_class_predictions = []
-
 
     for gen in range(1, problem.gen_count):
         print(f"Generation {gen}:")
@@ -42,11 +37,6 @@ def main(problem):
         representation.display_all_fitness()
         representation.display_highest_representation()
 
-        # Collect class predictions for the best individual in this generation
-        class_predictions = representation.display_highest_fitness_class_prediction()
-        best_class_predictions.append(class_predictions)
-
-
         # Collect fitness scores for plotting
         all_fitness = [individual.fitnessScore for individual in population.individuals]
         best_scores.append(max(all_fitness))
@@ -54,7 +44,7 @@ def main(problem):
         worst_scores.append(min(all_fitness))
 
     # Plot the fitness scores
-    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, best_class_predictions)
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
 
 
 

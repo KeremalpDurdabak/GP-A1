@@ -36,16 +36,12 @@ class Representation:
         print(f"Highest Individual's Class Prediction: {class_predictions}")
         return class_predictions  # Return the class predictions
 
-    def moving_average(self, data, window_size):
-        """Calculate the moving average of a 1D numpy array."""
-        return np.convolve(data, np.ones(window_size)/window_size, mode='valid')
-
 
     def plot_fitness_scores(self, best_scores, mean_scores, worst_scores, best_class_predictions, window_size=10):
-        plt.figure(figsize=(15, 6))
+        plt.figure(figsize=(15, 12))
 
         # First graph for fitness scores
-        plt.subplot(2, 1, 1)  # 2 row, 1 columns, first plot
+        plt.subplot(3, 1, 1)  # 3 rows, 1 column, first plot
         best_scores_percentage = [(x / self.max_possible_fitness) * 100 for x in best_scores]
         mean_scores_percentage = [(x / self.max_possible_fitness) * 100 for x in mean_scores]
         worst_scores_percentage = [(x / self.max_possible_fitness) * 100 for x in worst_scores]
@@ -55,21 +51,4 @@ class Representation:
         plt.xlabel('Generation')
         plt.ylabel('Fitness Score (%)')
         plt.legend()
-
-        # Second graph for class prediction percentages with highest predictions
-        plt.subplot(1, 2, 2)  # 1 row, 2 columns, second plot
-
-        best_class_predictions_np = np.array(best_class_predictions)
-        highest_predictions = np.zeros(best_class_predictions_np.shape[1])
-
-        for gen in range(best_class_predictions_np.shape[0]):
-            for i in range(best_class_predictions_np.shape[1]):
-                highest_predictions[i] = max(highest_predictions[i], best_class_predictions_np[gen, i])
-            plt.plot(highest_predictions, marker='o', linestyle='-')
-
-        plt.xlabel('Generation')
-        plt.ylabel('Highest Class Prediction')
-        plt.legend([f'Class {i+1}' for i in range(best_class_predictions_np.shape[1])])
-
-        plt.tight_layout()  # Adjust layout to prevent overlap
         plt.show()
