@@ -23,6 +23,7 @@ def main(problem):
     worst_scores = []
 
     highest_class_per_generation = []
+    best_instruction_count = []
 
     for gen in range(1, problem.gen_count):
         print(f"Generation {gen}:")
@@ -44,6 +45,10 @@ def main(problem):
         filtered_classes = {k: v for k, v in highest_class_predictions.items() if v > 50}
         highest_class_per_generation.append(filtered_classes)
 
+        highest_fitness_individual = max(population.individuals, key=lambda x: x.fitnessScore)
+        best_instruction_count.append(len(highest_fitness_individual.instructionList.instructions))
+
+
 
         # Collect fitness scores for plotting
         all_fitness = [individual.fitnessScore for individual in population.individuals]
@@ -52,7 +57,7 @@ def main(problem):
         worst_scores.append(min(all_fitness))
 
     # Plot the fitness scores
-    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, highest_class_per_generation)
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, highest_class_per_generation, best_instruction_count)
 
 
 if __name__ == "__main__":
@@ -68,7 +73,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 24
+    max_instruction = 32
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -84,20 +89,20 @@ if __name__ == "__main__":
     gap_percentage = 0.2
 
     # Generation Count
-    gen_count = 100
+    gen_count = 1000
 
     # Probability of a Mutation
     # 1. Probability of re-initializing an Instruction
     # 2. Probability of re-initializing an Instruction Bit
     # 3. Probability of randomly appending a new instruction to the child
     # 4. Probability of randomly removing an instruction from the child
-    mutation_prob = [0.1, 0.3, 0.1, 0.05]  # List of 4 probabilities
+    mutation_prob = [0.1, 0.3, 0.1, 0.1]  # List of 4 probabilities
 
 
     ############################
 
     # Initialize Problem Class with the Problem Parameters
-    problem = ProblemDefinition(iris_dataset, 
+    problem = ProblemDefinition(tictactoe_dataset, 
                                 gen_count, 
                                 population_count,
                                 gap_percentage, 

@@ -41,11 +41,11 @@ class Representation:
 
 
 
-    def plot_fitness_scores(self, best_scores, mean_scores, worst_scores, highest_class_per_generation):
+    def plot_fitness_scores(self, best_scores, mean_scores, worst_scores, highest_class_per_generation, best_instruction_count):
         plt.figure(figsize=(8,6))
 
         # First graph for fitness scores
-        plt.subplot(2, 1, 1)  # 2 rows, 1 column, first plot
+        plt.subplot(3, 1, 1)  # 2 rows, 1 column, first plot
         best_scores_percentage = [(x / self.max_possible_fitness) * 100 for x in best_scores]
         mean_scores_percentage = [(x / self.max_possible_fitness) * 100 for x in mean_scores]
         worst_scores_percentage = [(x / self.max_possible_fitness) * 100 for x in worst_scores]
@@ -57,7 +57,7 @@ class Representation:
         plt.legend()
 
         # Add a new subplot for the highest class per generation
-        plt.subplot(2, 1, 2)  # 2 rows, 1 column, second plot
+        plt.subplot(3, 1, 2)  # 2 rows, 1 column, second plot
 
         # Get unique class labels
         unique_class_labels = list({f"Class {i+1}" for i in range(self.population.problemDefinition.dataset.get_label_count())})
@@ -75,6 +75,12 @@ class Representation:
         plt.yticks(range(len(unique_class_labels)), unique_class_labels)
         plt.xlabel('Generation')
         plt.ylabel('Highest Scoring Class')
+
+        plt.subplot(3, 1, 3)  # 3 rows, 1 column, third plot
+        plt.plot(best_instruction_count, label='Best Instruction Count', color='#2ECC71')  # Greenish
+        plt.xlabel('Generation')
+        plt.ylabel('Instruction Count')
+        plt.legend()
+
         plt.tight_layout()  # Adjust layout to fit plots better
         plt.show()
-
