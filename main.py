@@ -22,6 +22,8 @@ def main(problem):
     mean_scores = []
     worst_scores = []
 
+    highest_class_per_generation = []
+
     for gen in range(1, problem.gen_count):
         print(f"Generation {gen}:")
         
@@ -37,6 +39,12 @@ def main(problem):
         representation.display_all_fitness()
         representation.display_highest_representation()
 
+        highest_class_predictions = representation.display_highest_fitness_class_prediction()
+        # Filter classes with scores above 50%
+        filtered_classes = {k: v for k, v in highest_class_predictions.items() if v > 50}
+        highest_class_per_generation.append(filtered_classes)
+
+
         # Collect fitness scores for plotting
         all_fitness = [individual.fitnessScore for individual in population.individuals]
         best_scores.append(max(all_fitness))
@@ -44,8 +52,7 @@ def main(problem):
         worst_scores.append(min(all_fitness))
 
     # Plot the fitness scores
-    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores)
-
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, highest_class_per_generation)
 
 
 if __name__ == "__main__":
