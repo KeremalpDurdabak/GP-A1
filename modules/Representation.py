@@ -38,6 +38,19 @@ class Representation:
         class_prediction_dict = {f"Class {i+1}": score for i, score in enumerate(class_predictions)}
         print(f"Highest Individual's Class Prediction: {class_prediction_dict}")
         return class_prediction_dict  # Return the class predictions as a dictionary
+    
+    def display_highest_fitness_class_prediction_by_label(self):
+        highest_fitness_individual = max(self.population.individuals, key=lambda x: x.fitnessScore)
+        class_predictions = highest_fitness_individual.get_predicted_classes()
+        
+        # Assuming class_predictions is a list of predicted classes for each instance
+        unique_labels = set(class_predictions)
+        label_count = len(class_predictions)
+        
+        for label in unique_labels:
+            correct_predictions = class_predictions.count(label)
+            print(f"Class {label}: {correct_predictions/label_count:.2f}")
+
 
 
 

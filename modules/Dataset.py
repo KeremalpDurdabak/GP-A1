@@ -28,6 +28,7 @@ class Dataset:
         
         # Shuffle the dataset using NumPy
         np.random.shuffle(self.df)
+        #self.df = self.df[0:5, :]
         
         # Update the instance variables
         self._X_numpy = self.df[:, :-self.label_count]
@@ -63,9 +64,9 @@ class Dataset:
     
     def one_hot_encode_target(self):
         encoder = OneHotEncoder(sparse=False)
-        y_onehot = encoder.fit_transform(self.df.iloc[:, -1].values.reshape(-1, 1))
+        y_onehot = encoder.fit_transform(self.df.iloc[:, -1].values.reshape(-1, 1)).astype(int)  # Convert to int
         label_count = y_onehot.shape[1]
-        
+            
         # Convert the original DataFrame to NumPy array and remove the last column (target)
         data_numpy = self.df.iloc[:, :-1].to_numpy()
         

@@ -1,0 +1,12 @@
+Prediction percentages for each class: {1: 79.8, 2: 50.0}
+Total number of instances for each class in the test dataset: {1: 134, 2: 58}
+Total prediction percentage: 70.1%
+Total correctly predicted instances: 139 out of 192
+
+
+107.2
+
+29
+
+
+

@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+import numpy as np
 from modules.BreedOperator import BreedOperator
 from modules.Dataset import Dataset
 from modules.OperatorSet import OperatorSet
@@ -49,36 +52,69 @@ def main(problem):
         best_instruction_count.append(len(highest_fitness_individual.instructionList.instructions))
 
 
-
         # Collect fitness scores for plotting
         all_fitness = [individual.fitnessScore for individual in population.individuals]
         best_scores.append(max(all_fitness))
         mean_scores.append(sum(all_fitness) / len(all_fitness))
         worst_scores.append(min(all_fitness))
 
-    # Plot the fitness scores
-    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, highest_class_per_generation, best_instruction_count)
-
     # Find the best individual from the training phase
     best_individual = max(population.individuals, key=lambda x: x.fitnessScore)
-    best_individual.fitnessScore = 0
 
     # Update the dataset in the ProblemDefinition object
     problem.dataset.set_new_data(problem.dataset.X_test, problem.dataset.y_test)
 
-    # Compute the fitness of the best individual on the test dataset
-    test_score = breeder.compute_individuals_fitness([best_individual])
+    # Evaluate the best individual on the test data
+    evaluate_best_individual_on_test_data(best_individual, problem)
 
-    # Convert the test score to a percentage
-    test_score_percentage = (test_score / problem.dataset.X_test.shape[0]) * 100
+    representation.display_highest_fitness_class_prediction_by_label()
 
-
-    # Log the test score
-    print(f"Test Score of the Best Individual: {test_score_percentage:.2f}%")
-    print(f"Predicted Instances: {test_score}")
+    # Plot the fitness scores
+    representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, highest_class_per_generation, best_instruction_count)
 
 
+def evaluate_best_individual_on_test_data(best_individual, problem):
+    # Initialize a dictionary to store the count of correct predictions for each class
+    correct_predictions = defaultdict(int)
+    total_predictions = defaultdict(int)
 
+    # Initialize variables for total correct and total instances
+    total_correct = 0
+    total_instances = 0
+
+    # Loop through the test data
+    for x, y in zip(problem.dataset.X_test, problem.dataset.y_test):
+        # Reset the register list
+        best_individual.registerList.reset_registers()
+        
+        # Execute the instruction list
+        best_individual.instructionList.execute_instance(x, best_individual.registerList)
+        
+        # Get the predicted label
+        predicted_label = best_individual.registerList.argmax(problem.dataset.get_label_count())
+        
+        # Update the total count for this class
+        real_label = np.argmax(y)
+        total_predictions[real_label] += 1
+
+        # Check if the prediction is correct
+        if np.array_equal(predicted_label, y):
+            correct_predictions[real_label] += 1
+            total_correct += 1
+
+        total_instances += 1
+
+    # Compute the prediction percentage for each class
+    prediction_percentages = {label: (correct_predictions[label] / total_predictions[label]) * 100
+                              for label in total_predictions.keys()}
+
+    # Compute the total prediction percentage
+    total_prediction_percentage = (total_correct / total_instances) * 100
+
+    print(f"Prediction percentages for each class: {prediction_percentages}")
+    print(f"Total number of instances for each class in the test dataset: {dict(total_predictions)}")
+    print(f"Total prediction percentage: {total_prediction_percentage:.2f}%")
+    print(f"Total correctly predicted instances: {total_correct} out of {total_instances}")
 
 
 if __name__ == "__main__":
@@ -94,7 +130,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 24
+    max_instruction = 32
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -110,20 +146,20 @@ if __name__ == "__main__":
     gap_percentage = 0.2
 
     # Generation Count
-    gen_count = 100
+    gen_count = 1000
 
     # Probability of a Mutation
     # 1. Probability of re-initializing an Instruction
     # 2. Probability of re-initializing an Instruction Bit
     # 3. Probability of randomly appending a new instruction to the child
     # 4. Probability of randomly removing an instruction from the child
-    mutation_prob = [0.1, 0.4, 0.1, 0.1]  # List of 4 probabilities
+    mutation_prob = [0.1, 0.3, 0.1, 0]  # List of 4 probabilities
 
 
     ############################
 
     # Initialize Problem Class with the Problem Parameters
-    problem = ProblemDefinition(iris_dataset, 
+    problem = ProblemDefinition(tictactoe_dataset, 
                                 gen_count, 
                                 population_count,
                                 gap_percentage, 
