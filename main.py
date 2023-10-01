@@ -59,6 +59,27 @@ def main(problem):
     # Plot the fitness scores
     representation.plot_fitness_scores(best_scores, mean_scores, worst_scores, highest_class_per_generation, best_instruction_count)
 
+    # Find the best individual from the training phase
+    best_individual = max(population.individuals, key=lambda x: x.fitnessScore)
+    best_individual.fitnessScore = 0
+
+    # Update the dataset in the ProblemDefinition object
+    problem.dataset.set_new_data(problem.dataset.X_test, problem.dataset.y_test)
+
+    # Compute the fitness of the best individual on the test dataset
+    test_score = breeder.compute_individuals_fitness([best_individual])
+
+    # Convert the test score to a percentage
+    test_score_percentage = (test_score / problem.dataset.X_test.shape[0]) * 100
+
+
+    # Log the test score
+    print(f"Test Score of the Best Individual: {test_score_percentage:.2f}%")
+    print(f"Predicted Instances: {test_score}")
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -73,7 +94,7 @@ if __name__ == "__main__":
     population_count = 100
 
     # Max Instruction (Row) per each Individual
-    max_instruction = 32
+    max_instruction = 24
 
     # Operators that will be used
     operators = OperatorSet(['+','-','*2','/2'])
@@ -89,20 +110,20 @@ if __name__ == "__main__":
     gap_percentage = 0.2
 
     # Generation Count
-    gen_count = 1000
+    gen_count = 100
 
     # Probability of a Mutation
     # 1. Probability of re-initializing an Instruction
     # 2. Probability of re-initializing an Instruction Bit
     # 3. Probability of randomly appending a new instruction to the child
     # 4. Probability of randomly removing an instruction from the child
-    mutation_prob = [0.1, 0.3, 0.1, 0.1]  # List of 4 probabilities
+    mutation_prob = [0.1, 0.4, 0.1, 0.1]  # List of 4 probabilities
 
 
     ############################
 
     # Initialize Problem Class with the Problem Parameters
-    problem = ProblemDefinition(tictactoe_dataset, 
+    problem = ProblemDefinition(iris_dataset, 
                                 gen_count, 
                                 population_count,
                                 gap_percentage, 

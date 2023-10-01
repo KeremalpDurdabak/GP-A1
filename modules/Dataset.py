@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.calibration import LabelEncoder
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 import numpy as np
 
@@ -10,12 +11,16 @@ class Dataset:
         self.label_count = 1  # Initialize with 1 assuming only one target column before encoding
         self.feature_count = self.df.shape[1]
 
+
         self._X_numpy = self.df.iloc[:, :-self.label_count].to_numpy()
         self._y_numpy = self.df.iloc[:, -self.label_count:].to_numpy()
 
         #print(self.df.head())
         self.preprocess_data()
         #print(self.df.head())
+
+        self.split_data()
+
 
     def preprocess_data(self):
         self.handle_string_features()
@@ -86,3 +91,13 @@ class Dataset:
         self._y_numpy = normalized_data[:, -self.label_count:]
 
         return normalized_data
+
+
+    def split_data(self, test_size=0.2):
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            self._X_numpy, self._y_numpy, test_size=test_size, random_state=42
+        )
+
+    def set_new_data(self, X, y):
+        self._X_numpy = X
+        self._X_numpy = y
